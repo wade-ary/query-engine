@@ -4,12 +4,12 @@ from faiss_rank import get_top_titles
 
 def main():
     # Step 1: Retrieve PubMed articles for the query
-    query = " stem cell research and regeneration of the optic nerve"
+    query = "main causes of autism"
     results = search_pubmed(
         query=query,
         num_terms=3,
-        retmax=10,
-        email="aryamanwade@example.com",  # NCBI recommends providing an email
+        retmax=3,
+        email="aryamanwade@gmail.com",  # NCBI recommends providing an email
   
     )
 
@@ -29,10 +29,12 @@ def main():
     print(f"Total unique articles collected: {len(all_articles)}\n")
 
     # Step 3: Rerank and extract top titles
-    top_titles = get_top_titles(query, all_articles, top_n=5)
-    print("Top 5 articles by semantic similarity:")
-    for idx, title in enumerate(top_titles, start=1):
-        print(f"  {idx}. {title}")
+    top_titles, top_abstracts = get_top_titles(query, all_articles, top_n=5)
+    
+    print("🔍 Top 5 Articles by Semantic Similarity:\n")
+    for idx, (title, abstract) in enumerate(zip(top_titles, top_abstracts), start=1):
+        print(f"{idx}. {title}")
+        print(f"   Abstract: {abstract[:300].strip()}...\n")
 
 
 if __name__ == '__main__':
