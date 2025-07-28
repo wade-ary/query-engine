@@ -1,17 +1,27 @@
 from query_pubmed import search_pubmed
 from faiss_rank import get_top_titles
+from query_openalex import search_openalex
+from query_semantic_scholar import search_semantic_scholar
 
 
 def main():
     # Step 1: Retrieve PubMed articles for the query
     query = "main causes of autism"
-    results = search_pubmed(
-        query=query,
-        num_terms=3,
-        retmax=3,
-        email="aryamanwade@gmail.com",  # NCBI recommends providing an email
-  
-    )
+    source = "pubmed"
+    if source == "pubmed":
+        results = search_pubmed(
+            query=query,
+            num_terms=3,
+            retmax=3,
+            email="aryamanwade@gmail.com",  # NCBI recommends providing an email
+    
+        )
+    elif source == "openalex":
+        results = search_openalex(query=query, num_terms=3, retmax=3)
+    elif source == "semantic_scholar":
+        results = search_semantic_scholar(query=query, num_terms=3, retmax=3)
+    else:
+        raise ValueError(f"Invalid source: {source}")
 
     # Step 2: Flatten all article records across keyword phrases
     all_articles = []

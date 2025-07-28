@@ -17,17 +17,30 @@ client = OpenAI(
 )
 
 
-def embed_texts(texts: list[str], model_name: str = "pritamdeka/S-PubMedBert-MS-MARCO") -> np.ndarray:
+def embed_texts(texts: List[str], source: str) -> np.ndarray:
     """
-    Embed a list of biomedical texts using a domain-specific SentenceTransformer model.
-    
+    Embed a list of texts using a domain-specific or general SentenceTransformer model,
+    based on the source (e.g., 'pubmed', 'semantic_scholar', 'openalex').
+
     Args:
-        texts (list[str]): List of text strings (e.g., PubMed abstracts or queries).
-        model_name (str): Hugging Face model name for domain-specific embeddings.
+        texts (List[str]): List of text strings (e.g., abstracts or queries).
+        source (str): The data source to determine which embedding model to use.
+                      One of: 'pubmed', 'semantic_scholar', 'openalex'.
 
     Returns:
         np.ndarray: Matrix of text embeddings (shape: len(texts) x embedding_dim)
     """
+    source = source.lower()
+
+    if source == "pubmed":
+        model_name = "pritamdeka/S-PubMedBert-MS-MARCO"
+    elif source == "openalex":
+        model_name = "sentence-transformers/all-mpnet-base-v2"  # general-purpose model
+    elif source == "semantic_scholar":
+        model_name = "sentence-transformers/allenai-specter"  # placeholder for now
+    else:
+        raise ValueError(f"Unknown source '{source}'. Expected 'pubmed', 'openalex', or 'semantic_scholar'.")
+
     model = SentenceTransformer(model_name)
     embeddings = model.encode(texts, batch_size=32, show_progress_bar=True, convert_to_numpy=True)
     return embeddings
