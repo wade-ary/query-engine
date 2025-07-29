@@ -51,7 +51,7 @@ def search_semantic_scholar(query: str,
                 break
             page_url = f"{BASE_URL}?token={data['token']}&fields=title,abstract,year,authors,url,venue&limit={retmax}"
 
-            time.sleep(1)  # to be polite with rate limits
+            time.sleep(1)  # Respect API rate limits
 
         results[phrase] = articles
 

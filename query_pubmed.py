@@ -2,11 +2,9 @@ import os
 import requests
 import xml.etree.ElementTree as ET
 from typing import List, Dict
-
-# Assume generate_search_terms is defined elsewhere and imported here
 from query_generator import generate_search_terms
 
-# Base URLs for NCBI Entrez E-utilities (latest endpoints)
+# Base URLs for NCBI Entrez E-utilities 
 EUTILS_BASE = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
 
 
@@ -34,7 +32,7 @@ def search_pubmed(query: str,
     phrases = generate_search_terms(query, num_terms)
     results: Dict[str, List[Dict]] = {}
 
-    # Prepare common request params
+    # Prepare request params
     common_params = {
         "db": "pubmed",
         "retmax": retmax,
@@ -46,7 +44,7 @@ def search_pubmed(query: str,
         common_params["api_key"] = api_key
 
     for phrase in phrases:
-        # Step 1: ESearch to get PMIDs
+        # ESearch to get PMIDs
         esearch_params = {**common_params, "term": phrase}
         esearch_resp = requests.get(f"{EUTILS_BASE}/esearch.fcgi", params=esearch_params)
         esearch_resp.raise_for_status()
@@ -54,7 +52,7 @@ def search_pubmed(query: str,
 
         articles: List[Dict] = []
         if id_list:
-            # Step 2: ESummary to fetch basic metadata
+            # ESummary to fetch basic metadata
             summary_params = {
                 "db": "pubmed",
                 "id": ",".join(id_list),
@@ -65,7 +63,7 @@ def search_pubmed(query: str,
             esummary_resp.raise_for_status()
             summary_data = esummary_resp.json().get("result", {})
 
-            # Step 3: EFetch to retrieve abstracts in XML
+            # EFetch to retrieve abstracts in XML
             fetch_params = {
                 "db": "pubmed",
                 "id": ",".join(id_list),

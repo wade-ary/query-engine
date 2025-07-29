@@ -42,7 +42,7 @@ User query:
         lines = [line.strip("-• )") for line in raw.splitlines() if line.strip()]
         terms = [t for line in lines for t in line.split(",")]
 
-    # ensure we return only unique, non-empty strings
+  
     return [t.strip() for t in dict.fromkeys(terms) if t.strip()]
 
 

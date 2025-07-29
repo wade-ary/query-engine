@@ -37,9 +37,9 @@ def search_openalex(query: str,
         while retrieved < retmax:
             params = {
                 "search": phrase,
-                "per-page": min(50, retmax - retrieved),  # Fetch in chunks
+                "per-page": min(50, retmax - retrieved), 
                 "cursor": cursor,
-                "mailto": email or "your_email@example.com"  # optional
+                "mailto": email or "aryamanwade@gmail.com"  # optional
             }
 
             response = requests.get(BASE_URL, params=params, headers=headers)
@@ -78,7 +78,7 @@ def search_openalex(query: str,
             else:
                 break  # no more results
 
-            time.sleep(1)  # Respect API rate limits
+            time.sleep(1)  # API rate limits
 
         results[phrase] = articles
 
