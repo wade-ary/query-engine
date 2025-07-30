@@ -60,7 +60,7 @@ def build_faiss_index(embeddings: np.ndarray) -> faiss.Index:
     return index
 
 
-def rerank_with_faiss(query: str, documents: list[dict], top_k: int = 5) -> list[dict]:
+def rerank_with_faiss(query: str, documents: list[dict], top_k: int = 10) -> list[dict]:
     # Only keep docs with non-empty titles
     docs_with_text = [d for d in documents if d.get("title", "").strip()]
     # Use titles instead of abstracts

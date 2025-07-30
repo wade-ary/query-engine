@@ -8,7 +8,7 @@ from query_generator import generate_search_terms
 BASE_URL = "https://api.semanticscholar.org/graph/v1/paper/search/bulk"
 
 def search_semantic_scholar(query: str,
-                             num_terms: int = 8,
+                             num_terms: int = 10,
                              retmax: int = 20,
                              email: str = None,
                              api_key: str = None) -> Dict[str, List[Dict]]:

@@ -19,7 +19,7 @@ def generate_search_terms(query: str, num_terms: int = 8) -> list[str]:
     prompt = f"""
 You are a research‐assistant LLM.  
 Given the user’s question, suggest {num_terms} concise keyword or phrase searches 
-that would retrieve the most relevant papers from databases like PubMed, arXiv, or Google Scholar.  
+that would retrieve the most relevant papers from databases like PubMed, Semantic Scholar, or OpenAlex.  
 Respond with a valid JSON array of strings (no extra text).
 
 Example output:

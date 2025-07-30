@@ -9,7 +9,7 @@ EUTILS_BASE = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
 
 
 def search_pubmed(query: str,
-                  num_terms: int = 8,
+                  num_terms: int = 10,
                   retmax: int = 20,
                   email: str = None,
                   api_key: str = None) -> Dict[str, List[Dict]]:
