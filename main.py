@@ -5,22 +5,23 @@ from query_semantic_scholar import search_semantic_scholar
 import argparse
 from final_summary import summarize_paper_with_query
 def main(query, source):
-    # Step 1: Retrieve PubMed articles for the query
+
+    # num_terms: Number of keyword searches per query
+    num_terms = 10
+    # retmax: Number of results returned per keyword serach
+    retmax = 20
+
+    # Retrieve articles for the query
     if source == "pubmed":
-        results = search_pubmed(
-            query=query,
-            num_terms=10,
-            retmax=20,
-            email="aryamanwade@gmail.com",
-        )
+        results = search_pubmed(query=query,num_terms=num_terms,retmax=retmax)
     elif source == "openalex":
-        results = search_openalex(query=query, num_terms=10, retmax=20)
+        results = search_openalex(query=query, num_terms=num_terms, retmax=retmax)
     elif source == "semantic_scholar":
-        results = search_semantic_scholar(query=query, num_terms=5, retmax=5)
+        results = search_semantic_scholar(query=query, num_terms=num_terms, retmax=retmax)
     else:
         raise ValueError(f"Invalid source: {source}")
 
-    # Step 2: Flatten all article records across keyword phrases
+    # Flatten all article records across keyword phrases
     all_articles = []
     for phrase, articles in results.items():
         print(f"Phrase {phrase!r} returned {len(articles)} articles")
@@ -39,11 +40,13 @@ def main(query, source):
     # Step 3: Rerank and extract top titles
     top_titles, top_abstracts = get_top_titles(query, all_articles, top_n=5)
     
-    print("Top 5 Articles by Semantic Similarity:\n")
-    for idx, (title, abstract) in enumerate(zip(top_titles, top_abstracts), start=1):
-        summary = summarize_paper_with_query(title, abstract, query)
-        print(f"{idx}. {title}")
-        print(f"   Summary: {summary}\n")
+    with open("response.txt", "w", encoding="utf-8") as f:
+        f.write("Top 5 Articles by Semantic Similarity:\n\n")
+        for idx, (title, abstract) in enumerate(zip(top_titles, top_abstracts), start=1):
+            summary = summarize_paper_with_query(title, abstract, query)
+            entry = f"{idx}. {title}\n   Summary: {summary}\n\n"
+            print(entry)
+            f.write(entry)
 
 
 if __name__ == '__main__':
