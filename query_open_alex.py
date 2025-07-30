@@ -47,31 +47,27 @@ def search_openalex(query: str,
             data = response.json()
 
             for item in data.get("results", []):
+                primary_location = item.get("primary_location") or {}
+                source = primary_location.get("source") or {}
+
+                abstract_raw = item.get("abstract_inverted_index", "")
+                if isinstance(abstract_raw, dict):
+                    word_list = sorted([(pos, word) for word, pos_list in abstract_raw.items() for pos in pos_list])
+                    abstract = " ".join([word for _, word in word_list])
+                else:
+                    abstract = abstract_raw or ""
+
                 article = {
                     "title": item.get("title", ""),
-                    "abstract": item.get("abstract_inverted_index", ""),  # may be None
-                    "year": item.get("publication_year", None),
-                    "authors": [a["author"]["display_name"] for a in item.get("authorships", [])],
-                    "venue": item.get("primary_location", {}).get("source", {}).get("name", ""),
-                    "url": item.get("primary_location", {}).get("landing_page_url", ""),
-                    "doi": item.get("doi", ""),
-                    "open_access": item.get("open_access", {}).get("is_oa", False)
+                    "abstract": abstract,
+                    "venue": source.get("name", "")
                 }
-
-                # Decode abstract if present
-                if isinstance(article["abstract"], dict):
-                    abstract_text = []
-                    word_map = article["abstract"]
-                    word_list = sorted([(pos, word) for word, pos_list in word_map.items() for pos in pos_list])
-                    abstract_text = [word for _, word in sorted(word_list)]
-                    article["abstract"] = " ".join(abstract_text)
-                elif article["abstract"] is None:
-                    article["abstract"] = ""
 
                 articles.append(article)
                 retrieved += 1
                 if retrieved >= retmax:
                     break
+
 
             if "meta" in data and "next_cursor" in data["meta"]:
                 cursor = data["meta"]["next_cursor"]

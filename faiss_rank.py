@@ -3,10 +3,12 @@ import faiss
 import numpy as np
 from openai import OpenAI
 from sentence_transformers import SentenceTransformer
-llama_index.core import Document, VectorStoreIndex
 from llama_index.core.node_parser import SimpleNodeParser
 from llama_index.core.retrievers import VectorIndexRetriever
 from llama_index.embeddings.openai import OpenAIEmbedding
+from llama_index.core import Document
+from llama_index.core import VectorStoreIndex
+from typing import List
 
 
 # Client for OpenAI embeddings
@@ -63,10 +65,10 @@ def rerank_with_faiss(query: str, documents: list[dict], top_k: int = 5) -> list
     docs_with_text = [d for d in documents if d.get("title", "").strip()]
     # Use titles instead of abstracts
     texts = [d["title"] for d in docs_with_text]  
-
+    source = "semantic_scholar"
     # Embed titles
-    doc_embs = embed_texts(texts)
-    query_emb = embed_texts([query])[0].reshape(1, -1)
+    doc_embs = embed_texts(texts, source)
+    query_emb = embed_texts([query], source)[0].reshape(1, -1)
     faiss.normalize_L2(query_emb)
 
     # Build and search FAISS index over title embeddings
@@ -122,7 +124,7 @@ def rerank_chunks(chunks, query, top_k=5):
     nodes = parser.get_nodes_from_documents(documents)
 
     # Build a vector index 
-    index = VectorStoreIndex(nodes, embed_model=embed_model)
+    index = VectorStoreIndex(nodes, embed_model=OpenAIEmbedding(model_name="text-embedding-3-small"))
     retriever = VectorIndexRetriever(index=index, similarity_top_k=top_k)
 
     # Rerank by similarity to the original query
