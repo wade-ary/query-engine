@@ -47,8 +47,4 @@ python main.py --query "your topic" --source pubmed/semantic_scholar/openalex
 
 
 
-## Instructions to run:
 
-
-... pip install -r requirements.txt ...
-... python main.py --query "your topic" --source ("pubmed", "semantic_scholar", "open_alex") ...
