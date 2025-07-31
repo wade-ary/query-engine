@@ -1,6 +1,7 @@
 import requests
 import time
 from typing import List, Dict
+import os
 
 from query_generator import generate_search_terms
 
@@ -40,7 +41,7 @@ def search_openalex(query: str,num_terms: int = 10,
                 "search": phrase,
                 "per-page": min(50, retmax - retrieved), 
                 "cursor": cursor,
-                "mailto": email or "aryamanwade@gmail.com"  # optional
+                "mailto": email or os.getenv("OPENALEX_EMAIL")
             }
 
             response = requests.get(BASE_URL, params=params, headers=headers)
