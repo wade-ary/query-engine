@@ -13,6 +13,8 @@ def search_pubmed(query: str,
                   retmax: int = 20,
                   email: str = None,
                   api_key: str = None) -> Dict[str, List[Dict]]:
+    # Search for academic papers in PubMed database using multiple keyword phrases
+    # Converts user query into search terms, then fetches papers from PubMed API using Entrez tools
     """
     Given a user query, generate keyword search phrases, then fetch PubMed
     search results and abstracts for each phrase using Entrez ESearch, ESummary, and EFetch.

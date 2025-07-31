@@ -12,6 +12,9 @@ client = OpenAI(
 )
 
 def summarize_paper_with_query(title, abstract, query):
+    # Create a custom summary of each research paper that explains how it relates to the user's query
+    # Uses GPT-4 to generate a concise 3-5 sentence summary highlighting key findings and relevance
+    
     prompt = f"""
 You are an expert scientific research assistant.
 

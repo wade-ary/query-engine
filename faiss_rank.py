@@ -20,18 +20,9 @@ client = OpenAI(
 
 
 def embed_texts(texts: List[str], source: str) -> np.ndarray:
-    """
-    Embed a list of texts using a domain-specific or general SentenceTransformer model,
-    based on the source (e.g., 'pubmed', 'semantic_scholar', 'openalex').
-
-    Args:
-        texts (List[str]): List of text strings (e.g., abstracts or queries).
-        source (str): The data source to determine which embedding model to use.
-                      One of: 'pubmed', 'semantic_scholar', 'openalex'.
-
-    Returns:
-        np.ndarray: Matrix of text embeddings (shape: len(texts) x embedding_dim)
-    """
+    # Convert a list of text strings into numerical embeddings using different models based on the data source
+    # Uses PubMed-specific model for PubMed data, general model for OpenAlex, and science-focused model for Semantic Scholar
+    
     source = source.lower()
 
     if source == "pubmed":
@@ -49,9 +40,9 @@ def embed_texts(texts: List[str], source: str) -> np.ndarray:
 
 
 def build_faiss_index(embeddings: np.ndarray) -> faiss.Index:
-    """
-    Build a FAISS index for inner product similarity on normalized embeddings.
-    """
+    # Create a FAISS search index from embeddings for fast similarity search
+    # Normalizes the embeddings and builds an index optimized for inner product similarity
+    
     # Normalize embeddings to unit length
     faiss.normalize_L2(embeddings)
     dim = embeddings.shape[1]
@@ -61,6 +52,9 @@ def build_faiss_index(embeddings: np.ndarray) -> faiss.Index:
 
 
 def rerank_with_faiss(query: str, documents: list[dict], top_k: int = 10) -> list[dict]:
+    # Rank documents by comparing their titles to the query using FAISS similarity search
+    # Returns the top documents with their similarity scores
+    
     # Only keep docs with non-empty titles
     docs_with_text = [d for d in documents if d.get("title", "").strip()]
     # Use titles instead of abstracts
@@ -86,19 +80,9 @@ def rerank_with_faiss(query: str, documents: list[dict], top_k: int = 10) -> lis
 
 
 def get_top_titles(query: str, documents: list[dict], top_n: int = 5) -> tuple[list[str], list[str]]:
-    """
-    Run a two-stage reranking pipeline:
-    1. Rank documents by title using FAISS + domain-specific embeddings
-    2. Rerank corresponding abstracts using LlamaIndex + OpenAI embeddings
-
-    Args:
-        query (str): The user query
-        documents (list[dict]): List of documents with 'title' and 'abstract'
-        top_n (int): Number of top results to return
-
-    Returns:
-        tuple: (list of top titles, list of corresponding reranked abstracts)
-    """
+    # Two-stage ranking system: first rank by titles, then rerank abstracts
+    # Returns the best matching titles and their corresponding abstracts
+    
     # Coarse filtering using titles + domain-specific embeddings
     top_docs = rerank_with_faiss(query, documents, top_k=top_n * 2)  # retrieve a few extra
 
@@ -116,6 +100,8 @@ def get_top_titles(query: str, documents: list[dict], top_n: int = 5) -> tuple[l
 
 
 def rerank_chunks(chunks, query, top_k=5):
+    # Use LlamaIndex and OpenAI embeddings to rerank abstracts by similarity to the query
+    
     # Convert strings to LlamaIndex Document objects
     documents = [Document(text=chunk) for chunk in chunks]
 

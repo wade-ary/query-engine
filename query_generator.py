@@ -12,13 +12,12 @@ client = OpenAI(
 )
 
 def generate_search_terms(query: str, num_terms: int = 8) -> list[str]:
-    """
-    Ask GPT to turn a user query into a list of candidate keyword searches.
-    Expects the model to reply with a JSON array of strings only.
-    """
+    # Convert a user's research question into multiple keyword search terms for finding relevant papers
+    # Uses GPT-4 to generate search phrases that would work well in academic databases 
+    
     prompt = f"""
 You are a research‐assistant LLM.  
-Given the user’s question, suggest {num_terms} concise keyword or phrase searches 
+Given the user's question, suggest {num_terms} concise keyword or phrase searches 
 that would retrieve the most relevant papers from databases like PubMed, Semantic Scholar, or OpenAlex.  
 Respond with a valid JSON array of strings (no extra text).
 

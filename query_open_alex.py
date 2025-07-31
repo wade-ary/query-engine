@@ -6,11 +6,12 @@ from query_generator import generate_search_terms
 
 BASE_URL = "https://api.openalex.org/works"
 
-def search_openalex(query: str,
-                    num_terms: int = 10,
+def search_openalex(query: str,num_terms: int = 10,
                     retmax: int = 20,
                     email: str = None,
                     api_key: str = None) -> Dict[str, List[Dict]]:
+    # Search for academic papers in OpenAlex database using multiple keyword phrases
+    # Converts user query into search terms, then fetches papers from OpenAlex API
     """
     Given a user query, generate keyword search phrases, then fetch academic papers
     from OpenAlex using the /works endpoint.

@@ -15,6 +15,8 @@ def search_semantic_scholar(query: str,
                              retmax: int = 20,
                              email: str = None,
                              api_key: str = None) -> Dict[str, List[Dict]]:
+    # Search for academic papers in Semantic Scholar database using multiple keyword phrases
+    # Converts user query into search terms, then fetches papers from Semantic Scholar Graph API
     """
     Given a user query, generate keyword search phrases, then fetch Semantic Scholar
     results and abstracts using the Graph API.

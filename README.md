@@ -43,7 +43,7 @@ can be found in `response.txt`
 
 ```bash
 pip install -r requirements.txt
-python main.py --query "your topic" --source pubmed/semantic_scholar/openalex
+python main.py --query "your topic" --source "pubmed"/"semantic_scholar"/"openalex"
 
 
 
