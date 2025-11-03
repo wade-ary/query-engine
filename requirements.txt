@@ -5,4 +5,3 @@ faiss-cpu>=1.11.0
 sentence-transformers-5.0.0
 llama-index
 requests
-langchain
