@@ -1,15 +1,11 @@
 import json
-from openai import OpenAI
 import os
-
+from mistralai import Mistral
 from dotenv import load_dotenv
 load_dotenv()
 
-client = OpenAI(
-    api_key=os.getenv("OPENAI_API_KEY"),
-    project=os.getenv("OPENAI_PROJECT_ID"),
-    organization=os.getenv("OPENAI_ORG_ID")
-)
+
+client = Mistral(api_key=os.getenv("MISTRAL_API_KEY"))
 
 def generate_search_terms(query: str, num_terms: int = 8) -> list[str]:
     # Convert a user's research question into multiple keyword search terms for finding relevant papers
@@ -28,8 +24,8 @@ User query:
 \"\"\"{query}\"\"\"
     """.strip()
 
-    response = client.chat.completions.create(
-        model="gpt-4o",
+    response = client.chat.complete(
+        model="mistral-medium",
         messages=[{"role": "user", "content": prompt}]
     )
 

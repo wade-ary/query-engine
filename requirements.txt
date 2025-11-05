@@ -6,3 +6,5 @@ sentence-transformers-5.0.0
 llama-index
 requests
 langchain
+langchain-mistralai
+mistralai
