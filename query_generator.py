@@ -25,7 +25,7 @@ User query:
     """.strip()
 
     response = client.chat.complete(
-        model="mistral-medium",
+        model="mistral-small-2402",
         messages=[{"role": "user", "content": prompt}]
     )
 

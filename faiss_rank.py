@@ -9,7 +9,7 @@ from llama_index.embeddings.openai import OpenAIEmbedding
 from llama_index.core import Document
 from llama_index.core import VectorStoreIndex
 from typing import List
-
+from llama_index.embeddings.mistralai import MistralAIEmbedding
 
 # Client for OpenAI embeddings
 client = OpenAI(
