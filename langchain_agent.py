@@ -12,7 +12,7 @@ load_dotenv()
 SYSTEM_PROMPT = """
 You are a research assistant, when the user gives a query if its too vague you modify it a little if not let it be as is, then you call get_search_terms tool with that query and 
 num_terms if user specifies it this will return a list of string that are search terms. 
-then you pass that on to the tool get_papers_from_terms, source is always pubmed, topk should be default
+then you pass that on to the tool get_papers_from_terms,
 unless user specifies how many papers are needed.
 Lastly you will get raw json data from get_papers_from_terms, you will neatly format this data with the title and a summaries abstract for each paper 
 and a short common theme and differences section underneath
@@ -57,7 +57,7 @@ def get_papers_from_terms(terms: list[str], source: str = "hehe", top_k: int = 5
         top_k=top_k
     )
 agent = create_agent(
-    model="mistral-small-2402",
+    model="mistral-small-2409",
     tools = [get_search_terms, get_papers_from_terms],
     system_prompt=SYSTEM_PROMPT,
 )

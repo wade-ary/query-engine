@@ -9,7 +9,7 @@ from llama_index.embeddings.openai import OpenAIEmbedding
 from llama_index.core import Document
 from llama_index.core import VectorStoreIndex
 from typing import List
-from llama_index.embeddings.mistralai import MistralAIEmbedding
+from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 
 # Client for OpenAI embeddings
 client = OpenAI(
@@ -99,23 +99,34 @@ def get_top_titles(query: str, documents: list[dict], top_n: int = 5) -> tuple[l
     return reranked_titles, reranked_abstracts
 
 
-def rerank_chunks(chunks, query, top_k=5):
-    # Use LlamaIndex and OpenAI embeddings to rerank abstracts by similarity to the query
-    
-    # Convert strings to LlamaIndex Document objects
+def rerank_chunks(
+    chunks, 
+    query, 
+    top_k=5, 
+    model_name="BAAI/bge-small-en-v1.5"
+):
+    """
+    Rerank chunks using a basic HuggingFace embedding model.
+    Default: BAAI/bge-small-en-v1.5 (lightweight, reliable, and fully supported).
+    """
+
+    # 1. Convert raw text → Documents
     documents = [Document(text=chunk) for chunk in chunks]
 
-    # Parse into nodes 
+    # 2. Parse into nodes
     parser = SimpleNodeParser()
     nodes = parser.get_nodes_from_documents(documents)
 
-    # Build a vector index 
-    index = VectorStoreIndex(nodes, embed_model=OpenAIEmbedding(model_name="text-embedding-3-small"))
+    # 3. Load lightweight HF embedding model (no OpenAI, no Mistral)
+    embed_model = HuggingFaceEmbedding(model_name=model_name)
+
+    # 4. Build vector index
+    index = VectorStoreIndex(nodes, embed_model=embed_model)
+
+    # 5. Retrieve top_k similar chunks
     retriever = VectorIndexRetriever(index=index, similarity_top_k=top_k)
 
-    # Rerank by similarity to the original query
     results = retriever.retrieve(query)
 
-    # Return the top reranked abstracts
-    top_chunks = [res.node.get_content() for res in results]
-    return top_chunks
+    # 6. Extract ranked content
+    return [res.node.get_content() for res in results]

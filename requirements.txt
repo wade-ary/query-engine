@@ -8,3 +8,4 @@ requests
 langchain
 langchain-mistralai
 mistralai
+llama-index-embeddings-huggingface
