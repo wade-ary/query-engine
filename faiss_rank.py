@@ -51,7 +51,7 @@ def build_faiss_index(embeddings: np.ndarray) -> faiss.Index:
     return index
 
 
-def rerank_with_faiss(query: str, documents: list[dict], top_k: int = 10) -> list[dict]:
+def rerank_with_faiss(query: str, documents: list[dict], top_k: int = 10, source: str = "openalex") -> list[dict]:
     # Rank documents by comparing their titles to the query using FAISS similarity search
     # Returns the top documents with their similarity scores
     
@@ -59,7 +59,7 @@ def rerank_with_faiss(query: str, documents: list[dict], top_k: int = 10) -> lis
     docs_with_text = [d for d in documents if d.get("title", "").strip()]
     # Use titles instead of abstracts
     texts = [d["title"] for d in docs_with_text]  
-    source = "semantic_scholar"
+    
     # Embed titles
     doc_embs = embed_texts(texts, source)
     query_emb = embed_texts([query], source)[0].reshape(1, -1)

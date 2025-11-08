@@ -39,7 +39,7 @@ def get_search_terms(query: str, num_terms: int = 3) -> list[str]:
 
 
 @tool
-def get_papers_from_terms(terms: list[str], source: str = "hehe", top_k: int = 5) -> list[dict]:
+def get_papers_from_terms(terms: list[str], source: str = "openalex", top_k: int = 5) -> list[dict]:
     """
     Retrieve raw unformatted papers using a list of search terms.
 
