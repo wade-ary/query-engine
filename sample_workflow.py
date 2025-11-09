@@ -9,8 +9,7 @@ def get_raw_papers_from_terms(
     terms: list[str],
     source: str = "hehe",
     top_k: int = 5,
-    retmax: int = 5,
-):
+    retmax: int = 5,):
     """
     Given a list of keyword search terms, run academic searches and return the
     top-k most relevant papers (title + abstract) without formatting.
