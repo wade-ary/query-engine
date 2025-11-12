@@ -41,3 +41,7 @@ User query:
     return [t.strip() for t in dict.fromkeys(terms) if t.strip()]
 
 
+def fix_query(query: str) -> str:
+   
+    
+    return ""
