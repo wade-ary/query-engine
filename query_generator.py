@@ -4,7 +4,8 @@ from mistralai import Mistral
 from dotenv import load_dotenv
 load_dotenv()
 
-
+from langchain_openai import ChatOpenAI
+llm = ChatOpenAI(model="gpt-5-mini")
 client = Mistral(api_key=os.getenv("MISTRAL_API_KEY"))
 
 def generate_search_terms(query: str, num_terms: int = 8) -> list[str]:
@@ -24,12 +25,8 @@ User query:
 \"\"\"{query}\"\"\"
     """.strip()
 
-    response = client.chat.complete(
-        model="mistral-small-2409",
-        messages=[{"role": "user", "content": prompt}]
-    )
-
-    raw = response.choices[0].message.content.strip()
+    response = llm.invoke([{"role": "user", "content": prompt}])
+    raw = response.content.strip()
     try:
         terms = json.loads(raw)
     except json.JSONDecodeError:
@@ -40,8 +37,21 @@ User query:
   
     return [t.strip() for t in dict.fromkeys(terms) if t.strip()]
 
+REFINEMENT_PROMPT = """
+You are a query-refinement assistant.
 
+Your job: Rewrite the user's question into a clearer, more precise, academically-searchable version.
+
+Rules:
+- Keep the rewritten query to ONE sentence.
+- Make it specific, direct, and unambiguous.
+- Remove slang, filler, or conversational phrasing.
+- Keep all technical meaning from the original question.
+- Do NOT add new information.
+
+Return ONLY the refined query as plain text.
+"""
 def fix_query(query: str) -> str:
-   
-    
-    return ""
+    prompt = REFINEMENT_PROMPT + f"\n\nUser query:\n{query}\n\nRefined query:"
+    refined = llm.invoke(prompt).content.strip()
+    return refined
