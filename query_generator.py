@@ -6,7 +6,7 @@ load_dotenv()
 
 from langchain_openai import ChatOpenAI
 llm = ChatOpenAI(model="gpt-5-mini")
-client = Mistral(api_key=os.getenv("MISTRAL_API_KEY"))
+
 
 def generate_search_terms(query: str, num_terms: int = 8) -> list[str]:
     # Convert a user's research question into multiple keyword search terms for finding relevant papers

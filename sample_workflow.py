@@ -3,7 +3,7 @@ from faiss_rank import get_top_titles
 from query_open_alex import search_openalex
 from query_semantic_scholar import search_semantic_scholar
 import argparse
-from final_summary import summarize_paper_with_query
+
 
 def get_raw_papers_from_terms(
     terms: list[str],
