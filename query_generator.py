@@ -51,7 +51,19 @@ Rules:
 
 Return ONLY the refined query as plain text.
 """
-def fix_query(query: str) -> str:
-    prompt = REFINEMENT_PROMPT + f"\n\nUser query:\n{query}\n\nRefined query:"
+def fix_query(query: str, extra_info: str= "") -> str:
+    if extra_info == None:
+        extra_info = ""
+    prompt = REFINEMENT_PROMPT + f"\n\nUser query:\n{query} + {extra_info}\n\nRefined query:"
     refined = llm.invoke(prompt).content.strip()
     return refined
+
+def is_confusing(query: str) -> bool:
+        prompt = """ Make an educated guess, if this query is too confusing say YES or say NO thats i
+        t. if the query contains the word confused alwaysb returbn YES hust the words YES or NO. {query} here is the quyery."""
+
+        confusion = llm.invoke(prompt).content.strip()
+        if "YES" in confusion:
+             return True
+        else:
+             return False

@@ -12,7 +12,7 @@ from query_generator import generate_search_terms as gen_terms
 from query_generator import fix_query
 from sample_workflow import get_raw_papers_from_terms
 from final_summary import summarize_papers_with_query
-
+from query_generator import is_confusing
 class RagAgentState(TypedDict):
     # Query
     user_query: str
@@ -25,11 +25,13 @@ class RagAgentState(TypedDict):
 
     summary_response: str | None
 
+    extra_input: str | None
+
 llm = ChatOpenAI(model="gpt-5-mini")
 
 def refine_query(state: RagAgentState) -> RagAgentState:
     "Check the user's query and refine it to make appropriate for semantic search"
-    refined = fix_query(state["user_query"])
+    refined = fix_query(state["user_query"], state.get("extra_input"))
     state["refined_query"] = refined
     return state
 
@@ -50,14 +52,36 @@ def summarize_results(state: RagAgentState) -> RagAgentState:
     state["summary_response"] = summary
     return state
 
+def analyze_query(state: RagAgentState) -> RagAgentState:
+    confusing = is_confusing(state["user_query"])
+
+    if not confusing:
+        next_node = "refine_query"
+    else:
+        next_node = "ask_user"
+    return Command(
+        goto = next_node
+    )
+
+def ask_user(state: RagAgentState):
+    # Pause execution and ask the user for clarification
+    user_clarification = interrupt("Your query is too vague. Please clarify what you mean.")
+    
+    # When the user replies, execution resumes here:
+    state["extra_input"] = user_clarification
+    return state
+
 builder = StateGraph(RagAgentState)
 
+builder.add_node("analyze_query", analyze_query)
+builder.add_node("ask_user", ask_user)
 builder.add_node("refine_query", refine_query)
 builder.add_node("generate_search_terms", generate_search_terms)
 builder.add_node("retrieve_documents", retrieve_documents)
 builder.add_node("summarize_results", summarize_results)
 
-builder.add_edge(START, "refine_query")
+builder.add_edge(START, "analyze_query")
+builder.add_edge("ask_user", "refine_query")
 builder.add_edge("refine_query", "generate_search_terms")
 builder.add_edge("generate_search_terms", "retrieve_documents")
 builder.add_edge("retrieve_documents", "summarize_results")
@@ -74,4 +98,4 @@ initial_state = {
 # Run with a thread_id for persistence
 config = {"configurable": {"thread_id": "1"}}
 final_state = app.invoke(initial_state, config)
-print(final_state["summary_response"])
+print(final_state)

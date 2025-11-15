@@ -5,7 +5,7 @@ from query_semantic_scholar import search_semantic_scholar
 import argparse
 
 
-def get_raw_papers_from_terms(
+def get_raw_papers_from_terms_v2(
     terms: list[str],
     source: str = "hehe",
     top_k: int = 5,
@@ -57,3 +57,41 @@ def get_raw_papers_from_terms(
         })
 
     return output
+
+
+def get_raw_papers_from_terms(
+    terms: list[str],
+    source: str = "hehe",
+    top_k: int = 5,
+    retmax: int = 5,
+):
+    """
+    Mock version of get_raw_papers_from_terms.
+    Returns 5 sample papers in the same format:
+    [{"title": str, "abstract": str}, ...]
+    """
+
+    sample_output = [
+        {
+            "title": "Impact of Diet on Cardiovascular Health",
+            "abstract": "This study investigates dietary patterns and their influence on cardiovascular disease risk, focusing on saturated fats, fiber intake, and long-term metabolic outcomes."
+        },
+        {
+            "title": "Hypertension as a Primary Contributor to Heart Disease",
+            "abstract": "An analysis of blood pressure regulation, genetic predispositions, and environmental stressors that elevate the risk of myocardial infarction and stroke."
+        },
+        {
+            "title": "Obesity and Its Role in Heart Disease Development",
+            "abstract": "This review summarizes links between obesity, systemic inflammation, metabolic syndrome, and increased incidence of coronary artery blockage."
+        },
+        {
+            "title": "Smoking and Cardiovascular Mortality Trends",
+            "abstract": "A longitudinal study showing the correlation between smoking intensity, endothelial dysfunction, and elevated cardiovascular mortality rates."
+        },
+        {
+            "title": "Diabetes Mellitus and Cardiovascular Complications",
+            "abstract": "A clinical overview exploring how insulin resistance and chronic hyperglycemia accelerate atherosclerosis and elevate heart attack risk."
+        },
+    ]
+
+    return sample_output[:top_k]
